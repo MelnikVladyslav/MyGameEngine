@@ -1,26 +1,14 @@
 ﻿using MyGameEngine.SDL;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Runtime.InteropServices;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace WpfApp1
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
     public partial class MainWindow : Window
     {
+        private const int ProgressBarHeight = 20;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -45,12 +33,22 @@ namespace WpfApp1
                 return;
             }
 
+            // Створення рендерера
+            uint rendererFlags = SDLWrapper.SDL_RendererFlags.SDL_RENDERER_ACCELERATED | SDLWrapper.SDL_RendererFlags.SDL_RENDERER_PRESENTVSYNC;
+            IntPtr renderer = SDLWrapper.SDL_CreateRenderer(window, -1, rendererFlags);
+
+            // Створення текстури для прогрес-бару
+            IntPtr progressBarTexture = CreateProgressBarTexture(renderer);
+
             // Очікування та обробка подій
             bool quit = false;
             MyGameEngine.SDL.SDL_Event e;
 
             while (!quit)
             {
+                // Оновлення та відображення прогрес-бару
+                UpdateAndRenderProgressBar(progressBarTexture, renderer);
+
                 // Перевірка на тип події SDL_QUIT
                 while (SDLWrapper.SDL_PollEvent(out e) != 0)
                 {
@@ -70,9 +68,82 @@ namespace WpfApp1
                 }
             }
 
-            // Закриття вікна та завершення роботи з SDL
+            // Звільнення ресурсів текстури та закриття вікна
+            SDLWrapper.SDL_DestroyTexture(progressBarTexture);
             SDLWrapper.SDL_DestroyWindow(window);
             SDLWrapper.SDL_Quit();
+        }
+
+        private IntPtr CreateProgressBarTexture(IntPtr renderer)
+        {
+            // Тут ви можете використовувати SDL для створення текстури прогрес-бару
+            // Наприклад, створіть прямокутник зеленого кольору для початкового стану прогресу
+            IntPtr progressBarTexture = SDLWrapper.SDL_CreateTexture(renderer, SDLWrapper.SDL_PixelFormat.SDL_PIXELFORMAT_RGBA8888, (int)SDLWrapper.SDL_TextureAccess.SDL_TEXTUREACCESS_STREAMING, (int)Width, ProgressBarHeight);
+
+            return progressBarTexture;
+        }
+
+        private void UpdateAndRenderProgressBar(IntPtr progressBarTexture, IntPtr renderer)
+        {
+            // Оновлення значення прогрес-бару (змінюйте це значення під час завантаження гри)
+            int progressValue = CalculateProgressValue();
+
+            // Оновлення текстури прогрес-бару (змінюйте це значення під час завантаження гри)
+            UpdateProgressBarTexture(progressBarTexture, progressValue);
+
+            // Відображення прогрес-бару на екрані
+            SDLWrapper.SDL_RenderClear(renderer);
+            SDLWrapper.SDL_RenderCopy(renderer, progressBarTexture, IntPtr.Zero, new SDLWrapper.SDL_Rect { x = 0, y = (int)(Height - ProgressBarHeight), w = (int)Width, h = ProgressBarHeight });
+            SDLWrapper.SDL_RenderPresent(renderer);
+        }
+
+        private int CalculateProgressValue()
+        {
+            // Тут ви повинні визначити поточне значення прогресу на основі завантаження ресурсів
+            // Повертається значення від 0 до 100
+            return 50;
+        }
+
+        private void UpdateProgressBarTexture(IntPtr progressBarTexture, int progressValue)
+        {
+            // Отримати ширину та висоту текстури
+            int textureWidth, textureHeight;
+            SDLWrapper.SDL_QueryTexture(progressBarTexture, out _, out _, out textureWidth, out textureHeight);
+
+            // Створити буфер для пікселів
+            byte[] pixels = new byte[textureWidth * textureHeight * 4];
+
+            // Заповнити буфер залежно від значення прогресу
+            int progressWidth = (int)(textureWidth * (progressValue / 100.0));
+            for (int y = 0; y < textureHeight; y++)
+            {
+                for (int x = 0; x < textureWidth; x++)
+                {
+                    int index = (y * textureWidth + x) * 4;
+                    if (x < progressWidth)
+                    {
+                        // Зелений колір для частини прогрес-бару
+                        pixels[index] = 0;     // R
+                        pixels[index + 1] = 255; // G
+                        pixels[index + 2] = 0;   // B
+                        pixels[index + 3] = 255; // A
+                    }
+                    else
+                    {
+                        // Чорний колір для решти прогрес-бару
+                        pixels[index] = 0;   // R
+                        pixels[index + 1] = 0; // G
+                        pixels[index + 2] = 0; // B
+                        pixels[index + 3] = 255; // A
+                    }
+                }
+            }
+
+            // Оновити текстуру прогрес-бару
+            GCHandle pinnedPixels = GCHandle.Alloc(pixels, GCHandleType.Pinned);
+            IntPtr pixelsPtr = pinnedPixels.AddrOfPinnedObject();
+            SDLWrapper.SDL_UpdateTexture(progressBarTexture, IntPtr.Zero, pixelsPtr, textureWidth * 4);
+            pinnedPixels.Free();
         }
     }
 }
