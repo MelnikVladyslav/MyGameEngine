@@ -35,7 +35,7 @@ namespace WpfApp1
 
             // Створення рендерера
             uint rendererFlags = SDLWrapper.SDL_RendererFlags.SDL_RENDERER_ACCELERATED | SDLWrapper.SDL_RendererFlags.SDL_RENDERER_PRESENTVSYNC;
-            IntPtr renderer = SDLWrapper.SDL_CreateRenderer(window, -1, rendererFlags);
+            IntPtr renderer = SDLTexture.SDL_CreateRenderer(window, -1, rendererFlags);
 
             // Створення текстури для прогрес-бару
             IntPtr progressBarTexture = CreateProgressBarTexture(renderer);
@@ -69,7 +69,7 @@ namespace WpfApp1
             }
 
             // Звільнення ресурсів текстури та закриття вікна
-            SDLWrapper.SDL_DestroyTexture(progressBarTexture);
+            SDLTexture.SDL_DestroyTexture(progressBarTexture);
             SDLWrapper.SDL_DestroyWindow(window);
             SDLWrapper.SDL_Quit();
         }
@@ -78,7 +78,7 @@ namespace WpfApp1
         {
             // Тут ви можете використовувати SDL для створення текстури прогрес-бару
             // Наприклад, створіть прямокутник зеленого кольору для початкового стану прогресу
-            IntPtr progressBarTexture = SDLWrapper.SDL_CreateTexture(renderer, SDLWrapper.SDL_PixelFormat.SDL_PIXELFORMAT_RGBA8888, (int)SDLWrapper.SDL_TextureAccess.SDL_TEXTUREACCESS_STREAMING, (int)Width, ProgressBarHeight);
+            IntPtr progressBarTexture = SDLTexture.SDL_CreateTexture(renderer, SDLTexture.SDL_PixelFormat.SDL_PIXELFORMAT_RGBA8888, (int)SDLTexture.SDL_TextureAccess.SDL_TEXTUREACCESS_STREAMING, (int)Width, ProgressBarHeight);
 
             return progressBarTexture;
         }
@@ -92,9 +92,9 @@ namespace WpfApp1
             UpdateProgressBarTexture(progressBarTexture, progressValue);
 
             // Відображення прогрес-бару на екрані
-            SDLWrapper.SDL_RenderClear(renderer);
-            SDLWrapper.SDL_RenderCopy(renderer, progressBarTexture, IntPtr.Zero, new SDLWrapper.SDL_Rect { x = 0, y = (int)(Height - ProgressBarHeight), w = (int)Width, h = ProgressBarHeight });
-            SDLWrapper.SDL_RenderPresent(renderer);
+            SDLTexture.SDL_RenderClear(renderer);
+            SDLTexture.SDL_RenderCopy(renderer, progressBarTexture, IntPtr.Zero, new SDLTexture.SDL_Rect { x = 0, y = (int)(Height - ProgressBarHeight), w = (int)Width, h = ProgressBarHeight });
+            SDLTexture.SDL_RenderPresent(renderer);
         }
 
         private int CalculateProgressValue()
@@ -108,7 +108,7 @@ namespace WpfApp1
         {
             // Отримати ширину та висоту текстури
             int textureWidth, textureHeight;
-            SDLWrapper.SDL_QueryTexture(progressBarTexture, out _, out _, out textureWidth, out textureHeight);
+            SDLTexture.SDL_QueryTexture(progressBarTexture, out _, out _, out textureWidth, out textureHeight);
 
             // Створити буфер для пікселів
             byte[] pixels = new byte[textureWidth * textureHeight * 4];
@@ -142,7 +142,7 @@ namespace WpfApp1
             // Оновити текстуру прогрес-бару
             GCHandle pinnedPixels = GCHandle.Alloc(pixels, GCHandleType.Pinned);
             IntPtr pixelsPtr = pinnedPixels.AddrOfPinnedObject();
-            SDLWrapper.SDL_UpdateTexture(progressBarTexture, IntPtr.Zero, pixelsPtr, textureWidth * 4);
+            SDLTexture.SDL_UpdateTexture(progressBarTexture, IntPtr.Zero, pixelsPtr, textureWidth * 4);
             pinnedPixels.Free();
         }
     }
