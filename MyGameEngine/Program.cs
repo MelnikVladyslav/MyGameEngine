@@ -1,6 +1,4 @@
-﻿using MyGameEngine.SDL;
-
-namespace MyGameEngine
+﻿namespace MyGameEngine
 {
     internal class Program
     {
