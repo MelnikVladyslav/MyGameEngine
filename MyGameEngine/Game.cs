@@ -30,13 +30,13 @@ namespace MyGameEngine
             GL.BindBuffer(BufferTarget.ArrayBuffer, VertexBufferObject);
             GL.BufferData(BufferTarget.ArrayBuffer, testTr.vertices.Length * sizeof(float), testTr.vertices, BufferUsageHint.StaticDraw);
 
-            // Встановлення вказівників атрибутів вершин
-            GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, 3 * sizeof(float), 0);
-            GL.EnableVertexAttribArray(0);
-
             // Генерація та зв'язування Vertex Array Object (VAO)
             VertexArrayObject = GL.GenVertexArray();
             GL.BindVertexArray(VertexArrayObject);
+
+            // Встановлення вказівників атрибутів вершин
+            GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, 3 * sizeof(float), 0);
+            GL.EnableVertexAttribArray(0);
         }
 
         //Renderer
