@@ -1,10 +1,22 @@
 ﻿#version 330 core
-layout (location = 0) in vec3 aPos; // the position variable has attribute position 0
-  
-out vec4 vertexColor; // specify a color output to the fragment shader
 
-void main()
+layout(location = 0) in vec3 aPosition;
+
+// We add another input variable for the texture coordinates.
+
+layout(location = 1) in vec2 aTexCoord;
+
+// ...However, they aren't needed for the vertex shader itself.
+// Instead, we create an output variable so we can send that data to the fragment shader.
+
+out vec2 texCoord;
+
+void main(void)
 {
-    gl_Position = vec4(aPos, 1.0); // see how we directly give a vec3 to vec4's constructor
-    vertexColor = vec4(0.5, 0.0, 0.0, 1.0); // set the output variable to a dark-red color
+    // Then, we further the input texture coordinate to the output one.
+    // texCoord can now be used in the fragment shader.
+    
+    texCoord = aTexCoord;
+
+    gl_Position = vec4(aPosition, 1.0);
 }

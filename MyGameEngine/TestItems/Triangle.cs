@@ -9,9 +9,23 @@ namespace MyGameEngine.TestItems
     public class Triangle
     {
         public float[] vertices = {
-             -0.6f, -0.6f, 0.0f, // Bottom-left vertex
-             0.6f, -0.6f, 0.0f, // Bottom-right vertex
-             0.0f,  0.6f, 0.0f  // Top vertex
+                     //Position          Texture coordinates
+             0.5f,  0.5f, 0.0f, 1.0f, 1.0f, // top right
+             0.5f, -0.5f, 0.0f, 1.0f, 0.0f, // bottom right
+            -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, // bottom left
+            -0.5f,  0.5f, 0.0f, 0.0f, 1.0f  // top left
+        };
+
+        float[] texCoords = {
+            0.0f, 0.0f,  // lower-left corner  
+            1.0f, 0.0f,  // lower-right corner
+            0.5f, 1.0f   // top-center corner
+        };
+
+        public readonly uint[] indices =
+        {
+            0, 1, 3,
+            1, 2, 3
         };
     }
 }
