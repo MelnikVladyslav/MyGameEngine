@@ -39,7 +39,7 @@ namespace MyGameEngine
             GL.BufferData(BufferTarget.ElementArrayBuffer, testTr.indices.Length * sizeof(uint), testTr.indices, BufferUsageHint.StaticDraw);
 
             // Генерація та компіляція вершинного та фрагментного шейдерів
-            shader = new Shader("shader.vert", "shader.frag");
+            shader = new Shader("Files/Shader/shader.vert", "Files/Shader/shader.frag");
             shader.Use();
 
             //Texture
@@ -57,7 +57,7 @@ namespace MyGameEngine
             GL.EnableVertexAttribArray(texCoordLocation);
             GL.VertexAttribPointer(texCoordLocation, 2, VertexAttribPointerType.Float, false, 5 * sizeof(float), 3 * sizeof(float));
 
-            texture = Texture.LoadFromFile("container.png");
+            texture = Texture.LoadFromFile("Img/container.png");
             texture.Use(TextureUnit.Texture0);
 
             //Vector
