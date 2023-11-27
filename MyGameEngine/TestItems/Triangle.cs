@@ -9,7 +9,7 @@ namespace MyGameEngine.TestItems
     public class Triangle
     {
         public float[] vertices = {
-            -0.6f, -0.6f, 0.0f, // Bottom-left vertex
+             -0.6f, -0.6f, 0.0f, // Bottom-left vertex
              0.6f, -0.6f, 0.0f, // Bottom-right vertex
              0.0f,  0.6f, 0.0f  // Top vertex
         };
