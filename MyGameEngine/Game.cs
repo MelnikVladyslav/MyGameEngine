@@ -13,11 +13,12 @@ namespace MyGameEngine
         Shader shader;
         private int VertexArrayObject;
         private int _elementBufferObject;
+        int Width, Height;
 
         // For documentation on this, check Texture.cs.
         private Texture texture;
 
-        public Game(int width, int height, string title) : base(GameWindowSettings.Default, new NativeWindowSettings() { Size = (width, height), Title = title }) { }
+        public Game(int width, int height, string title) : base(GameWindowSettings.Default, new NativeWindowSettings() { Size = (width, height), Title = title }) { Width = width; Height = height; }
 
         //Start(Initilization)
         protected override void OnLoad()
@@ -75,8 +76,6 @@ namespace MyGameEngine
             //GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, 3 * sizeof(float), 0);
 
             //GL.EnableVertexAttribArray(0);
-
-
         }
 
         //Renderer
